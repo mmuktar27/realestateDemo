@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Search</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #fbbf24;
+            --text-color: #1f2937;
+            --light-gray: #f3f4f6;
+            --dark-gray: #4b5563;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+        }
+
+        .topnav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background-color: var(--light-gray);
+        }
+
+        .nav-links .login-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .nav-links .login-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .search-section {
+            margin-top: 100px;
+            
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-container {
+            background: white;
+            padding: 8px;
+       
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .search-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+    flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.8rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .search-button {
+            background-color: #007bff;
+    border: none;
+    width: 40px;
+    height: 40px;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    display: inline-flex; /* Ensures alignment with inline elements */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-top: 25px; /* Adjust to match the vertical alignment of other items */
+    vertical-align: middle; 
+        }
+
+        .search-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .property-type {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 1;
+        }
+
+        .for-sale {
+            background-color: #34d399;
+            color: white;
+        }
+
+        .for-rent {
+            background-color: #60a5fa;
+            color: white;
+        }
+
+        .property-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .property-details {
+            padding: 1.5rem;
+        }
+
+        .property-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .property-location {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .property-features {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .property-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #343a40;
+            color: white;
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .search-filters {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav">
+        <a href="#" class="logo">DreamHome</a>
+        <div class="nav-links">
+            <a href="#">Buy</a>
+            <a href="#">Rent</a>
+            <a href="#">Sell</a>
+            <a href="#">Contact</a>
+            <a href="#" class="login-btn">Login</a>
+        </div>
+    </div>
+
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label>Location</label>
+                    <input type="text" placeholder="Enter city, area or address">
+                </div>
+                <div class="filter-group">
+                    <label>Property Type</label>
+                    <select>
+                        <option value="">All Types</option>
+                        <option value="house">House</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="condo">Condo</option>
+                        <option value="villa">Villa</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Purpose</label>
+                    <select>
+                        <option value="">Buy or Rent</option>
+                        <option value="sale">For Sale</option>
+                        <option value="rent">For Rent</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Price Range</label>
+                    <select>
+                        <option value="">Any Price</option>
+                        <option value="0-100000">$0 - $100,000</option>
+                        <option value="100000-300000">$100,000 - $300,000</option>
+                        <option value="300000-500000">$300,000 - $500,000</option>
+                        <option value="500000+">$500,000+</option>
+                    </select>
+                    
+                </div>
+             
+                <div class="filter-group search-icon">
+                    <button class="search-button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <div class="property-grid">
+        <div class="property-card">
+            <span class="property-type for-sale">For Sale</span>
+            <img src="2148972401.jpg" alt="Modern House" class="property-image">
+            <div class="property-details">
+                <h3 class="property-title">Modern Family House</h3>
+                <p class="property-location">📍 123 Main St, Downtown</p>
+                <div class="property-features">
+                    <span>3 Beds</span>
+                    <span>•</span>
+                    <span>2 Baths</span>
+                    <span>•</span>
+                    <span>1,500 sqft</span>
+                </div>
+                <p class="property-price">NGN450,000</p>
+            </div>
+        </div>
+
+        <div class="property-card">
+            <span class="property-type for-rent">For Rent</span>
+            <img src="2150666209.jpg" alt="Luxury Apartment" class="property-image">
+            <div class="property-details">
+                <h3 class="property-title">Luxury City Apartment</h3>
+                <p class="property-location">📍 456 Park Ave, Midtown</p>
+                <div class="property-features">
+                    <span>2 Beds</span>
+                    <span>•</span>
+                    <span>2 Baths</span>
+                    <span>•</span>
+                    <span>1,200 sqft</span>
+                </div>
+                <p class="property-price">NGN2,500/mo</p>
+            </div>
+        </div>
+
+        <div class="property-card">
+            <span class="property-type for-sale">For Sale</span>
+            <img src="151616.jpg" alt="Beach Villa" class="property-image">
+            <div class="property-details">
+                <h3 class="property-title">Beachfront Villa</h3>
+                <p class="property-location">📍 789 Ocean Dr, Seaside</p>
+                <div class="property-features">
+                    <span>4 Beds</span>
+                    <span>•</span>
+                    <span>3 Baths</span>
+                    <span>•</span>
+                    <span>2,800 sqft</span>
+                </div>
+                <p class="property-price">NGN875,000</p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Real Estate Listings. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
